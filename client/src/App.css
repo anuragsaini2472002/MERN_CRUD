@@ -1,0 +1,11 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 0.90rem;
+}
+
+.add_btn{
+  text-align: right;
+  margin-right: 1rem;
+}
