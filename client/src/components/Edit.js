@@ -1,7 +1,9 @@
-import React,{useState} from 'react'
-import { Link } from 'react-router-dom';
+import React,{useState, useEffect} from 'react'
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 const Edit = () => {
+
+    const history = useNavigate();
 
     const [inputVal, setInputVal] = useState({
         name:"",
@@ -16,6 +18,60 @@ const Edit = () => {
     const setData = (e) => {
         const {name,value} = e.target;
         setInputVal({...inputVal,[name]:value});
+    }
+
+    const {id} = useParams("");
+    console.log(id)
+
+    const getdata = async () => {
+
+        const res = await fetch(`/getuser/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        if (res.status === 422 || !data) {
+            console.log("error ");
+
+        } else {
+            setInputVal(data)
+            console.log("get data");
+
+        }
+    }
+
+    useEffect(() => {
+        getdata();
+    }, [])
+
+    const updateUser = async (e) =>{
+        e.preventDefault();
+
+        const {name,email,age,mobile,work,address,desc} = inputVal;
+
+        const res2 = await fetch(`/updateuser/${id}`, {
+            method: 'PATCH', 
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name,email,age,mobile,work,address,desc
+            })
+        });
+
+        const data2 = await res2.json();
+        console.log(data2);
+
+        if(res2.status === 422 || !data2){
+            alert("Fill the data");
+        } else {
+            history('/');
+        }
     }
 
     return (<>
@@ -53,7 +109,7 @@ const Edit = () => {
                         <textarea type="text" name="desc" value={inputVal.desc} onChange={setData} className="form-control" id="exampleInputPassword1" />
                     </div>
 
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <button type="submit" onClick={updateUser}  className="btn btn-primary">Submit</button>
                 </div>
             </form>
 

@@ -18,6 +18,38 @@ const Register = () => {
         setInputVal({...inputVal,[name]:value});
     }
 
+    const addData = async (e) =>{
+        e.preventDefault();
+
+        const {name,email,age,mobile,work,address,desc} = inputVal;
+
+        
+        const res = await fetch("/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name,email,age,mobile,work,address,desc
+            })
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        if (res.status === 422 || !data) {
+            console.log("error ");
+            alert("error");
+
+        } else {
+            // history.push("/")
+            // setUdata(data)
+            console.log("data added");
+
+        }
+    }
+
+
     return (<>
         <div className="container">
 
@@ -53,7 +85,7 @@ const Register = () => {
                         <textarea type="text" name="desc" value={inputVal.desc} onChange={setData} className="form-control" id="exampleInputPassword1" />
                     </div>
 
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <button type="submit" onClick={addData} className="btn btn-primary">Submit</button>
                 </div>
             </form>
 
